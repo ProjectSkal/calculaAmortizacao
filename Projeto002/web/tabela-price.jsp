@@ -10,8 +10,14 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>AMORTIZAÇÕES</title>
+        <%@include file="WEB-INF/jspf/header.jspf" %>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <%@include file="WEB-INF/jspf/menu.jspf"%> <br>
+            <h1>Tabela Price!</h1>
+            
+            
+            
+    <%@include file="WEB-INF/jspf/folder.jspf" %>
     </body>
 </html>
