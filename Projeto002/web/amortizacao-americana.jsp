@@ -4,6 +4,7 @@
     Author     : gabriela.s.duarte
 --%>
 
+<%@page import="java.text.DecimalFormat"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,10 +14,9 @@
         <%@include file="WEB-INF/jspf/header.jspf" %>
     </head>
     <body>
-        
-        <%@include file="WEB-INF/jspf/menu.jspf"%> <br>
-            <h1>Amortização Americana!</h1>
-        
+            <%@include file="WEB-INF/jspf/menu.jspf"%> <br>
+            <h2>Sistema de Amortização Americano</h2>
+                      
             <p>O Sistema de Amortização Americano é uma forma de pagamento de empréstimos que se caracteriza pelo pagamento apenas dos juros da dívida,
                 deixando o valor da dívida constante, que pode ser paga em apenas um único pagamento.</p>
 
@@ -25,46 +25,96 @@
             
             <p>Tem como desvantagem que o pagamento de juros pode, em tese, ser perpétuo mesmo quando já se pagou o equivalente à dívida em si.
                 Para isso, basta que o número de prestações exceda 100% quando da soma dos juros simples.</p>
-            
-            <form>
-                Valor R$<input type="text" name="valor"/> <br>
-                Meses <input type="text" name="meses"/> <br>
-                Juros <input type="text" name="juros" placeholder="Em porcentagem"/> <br>
-                <input type ="submit" value="Calcular" name="calculo"/> <br>
-        </form>
-        <%try{ %>
-            <%if(request.getParameter("calculo")!= null){%>
-            <%  double valor = Double.parseDouble(request.getParameter("valor"));
-                int meses = Integer.parseInt(request.getParameter("meses"));
-                double taxaJuros = Double.parseDouble(request.getParameter("juros")); 
-                double jurosTotal;
-                double totalAmortizacao;
-                taxaJuros = taxaJuros/100;%>
-                
-                <table border="2">
-                    <tr>
-                        <th> Saldo </th>
-                        <th> Mês   </th>
-                        <th> Juros </th>
-                        <th> Prestação </th>
-                    </tr>
-                    <%jurosTotal = taxaJuros * valor;%>
-                   <% for (int i=1;i<=meses;i++){ %>
-                    <tr>
-                        <td> <%=valor%> </td>
-                        <td> <%=i%> </td>
-                        <td> <%=jurosTotal%> </td>
-                        <td> <%=jurosTotal%> </td>
-                    </tr>
-                 <%  }%>
-                 <%jurosTotal = jurosTotal*meses;%>
-                 <% totalAmortizacao = valor+jurosTotal;%>
-                 <h1> Total <%=totalAmortizacao%> </h1>
-                </table>
-            <%}%>
-        <% } catch(Exception ex){ %>
-        <h1 style = 'color:red;'> Erro ao fazer amortazição americana</h1>
-        <%} %>
+            <hr/>
+            <%
+                int p = 0;
+                try {
+                    p = Integer.parseInt(request.getParameter("p"));
+                } catch (Exception e) {
+                }
+                float v = 0;
+                try {
+                    v = Float.parseFloat(request.getParameter("v"));
+                } catch (Exception e) {
+                }
+                float j = 0;
+                try {
+                    j = Float.parseFloat(request.getParameter("j"));
+                } catch (Exception e) {
+                }
+                DecimalFormat cv = new DecimalFormat("#0.00");
+                DecimalFormat cj = new DecimalFormat("#0.00");
+            %>
+            <div class="fundo container">
+                <br/>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="p" class="col-sm-2 control-label">Período(meses)</label>
+                        <div class="col-sm-2">
+                            <input class="form-control" type="number" name="p" placeholder="ex: 12"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="v" class="col-sm-2 control-label">Valor $</label>
+                        <div class="col-sm-2">
+                            <div class="input-group">
+                                <input class="form-control" type="number" step="0.01" name="v" placeholder="ex: 12000,67"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="j" class="col-sm-2 control-label">Juros(%a.m.)</label>
+                        <div class="col-sm-2">
+                                <input class="form-control" type="number" step="0.01" name="j" placeholder="ex: 12,5"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-success">Calcular</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="container">
+                <h2>Tabela de Cálculo:</h2>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <table class="table">
+                            <tr>
+                                <th>Mês</th>
+                                <th>Saldo Devedor (R$)</th>
+                                <th>Amortização (R$)</th>
+                                <th>Juros (R$)</th>
+                            </tr>
+                            <%for (int i = 0; i <= p; i++) {%>
+                            <tr>
+                                <td><%=i%></td>
+                                <%if (i == p) {
+                                        out.println("<td>" + cv.format(0) + "</td>");
+                                    } else {
+                                        out.println("<td>" + cv.format(v) + "</td>");
+                                    }%>
+                                <%if (i == p) {
+                                        out.println("<td>" + cv.format(v) + "</td>");
+                                    } else {
+                                        out.println("<td>" + cv.format(0) + "</td>");
+                                    }%>
+                                <%if (i != 0) {
+                                        out.println("<td>" + cj.format(v * j * 0.01) + "</td>");
+                                    } else {
+                                        out.println("<td>" + cj.format(0) + "</td>");
+                                    }%>                
+                            </tr>
+                            <%}%>
+                        </table>
+                    </div>
+                    <div class="col-sm-4">
+                        <span><h4>Total de juros é: R$ <%=cj.format(p * v * j * 0.01)%></h4></span>
+                        <span><h4>Total a pagar é:  R$ <%=cv.format((p * v * j * 0.01) + v)%></h4></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     <%@include file="WEB-INF/jspf/folder.jspf" %>
     </body>
 </html>
