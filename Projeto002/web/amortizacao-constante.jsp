@@ -53,6 +53,8 @@
                 } catch (Exception e) {
                     
                 }
+                
+                taxa = taxa / 100;
                 toalAmortizado = divida;
                 DecimalFormat decimal = new DecimalFormat("#0.00");                
                 float amortizacao = divida / parcela;                
